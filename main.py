@@ -13,7 +13,6 @@ app.register_blueprint(customer_n)
 app.register_blueprint(product_n)
 app.register_blueprint(transaction_n)
 
-# Create tables if they don't exist
 Base.metadata.create_all(bind=engine)
 
 if __name__ == '__main__':
