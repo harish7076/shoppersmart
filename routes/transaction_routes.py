@@ -1,23 +1,37 @@
 from flask import Blueprint, request, jsonify
 from database import sessionlocal
 from models.transaction import Transaction
+from datetime import datetime
 
 transaction_n = Blueprint('transactions', __name__)
 
+
+
 @transaction_n.route('/transactions', methods=['POST'])
 def add_transaction():
+    data = request.get_json()
     db = sessionlocal()
-    data = request.json
+
+
+    purchase_date_str = data.get("purchase_date")
+    if purchase_date_str:
+        try:
+            purchase_date = datetime.fromisoformat(purchase_date_str)
+        except ValueError:
+            return {"error": "Invalid datetime format. Use ISO format."}, 400
+    else:
+        purchase_date = None  
+
     transaction = Transaction(
-        customer_id=data.get('customer_id'),
-        product_id=data.get('product_id'),
-        purchase_date=data.get('purchase_date')
+        customer_id=data["customer_id"],
+        product_id=data["product_id"],
+        purchase_date=purchase_date  
     )
+
     db.add(transaction)
     db.commit()
-    db.refresh(transaction)
-    db.close()
-    return jsonify({"transaction_id": transaction.transaction_id})
+
+    return {"message": "Transaction added successfully"}
 
 @transaction_n.route('/transactions', methods=['GET'])
 def get_all_transactions():

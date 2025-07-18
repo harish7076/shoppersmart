@@ -10,6 +10,6 @@ class Transaction(Base):
     customer_id = Column(Integer, ForeignKey('customers.customer_id'), nullable=False)
     product_id = Column(Integer, ForeignKey('products.product_id'), nullable=False)
    
-    purchased_date= Column(DateTime, default=datetime.utcnow)
+    purchase_date= Column(DateTime, default=datetime.utcnow)
 
    
